@@ -1,0 +1,11 @@
+@article {dtk15.2:ziegenhagen:animate,
+  author        = {Uwe Ziegenhagen},
+  title         = {Animierte PDFs erstellen mit dem Paket \texttt{animate}},
+  journal       = dtk,
+  volume        = {27},
+  number        = {2},
+  date          = {2015},
+  month         = {5},
+  pages         = {50--56},
+  keywords      = {bretter},
+}

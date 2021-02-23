@@ -1,0 +1,23 @@
+@article {dtk15.1:ziegenhagen:groessere,
+  author        = {Uwe Ziegenhagen},
+  title         = {Größere Dokumente mit \LaTeX{} erstellen},
+  journal       = dtk,
+  volume        = {27},
+  number        = {1},
+  date          = {2015},
+  month         = {2},
+  pages         = {25--29},
+  keywords      = {bretter},
+}
+
+@article {dtk15.1:ziegenhagen:scrletter,
+  author        = {Uwe Ziegenhagen},
+  title         = {Die neue \texttt{scrletter} Umgebung in {\KOMAScript}},
+  journal       = dtk,
+  volume        = {27},
+  number        = {1},
+  date          = {2015},
+  month         = {2},
+  pages         = {29--31},
+  keywords      = {bretter},
+}

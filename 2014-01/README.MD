@@ -1,0 +1,11 @@
+@article {dtk14.1:ziegenhagen:tastenkuerzel,
+  author        = {Uwe Ziegenhagen},
+  title         = {Schneller \enquote{{\TeX}en} mit Tastenkürzeln},
+  journal       = dtk,
+  volume        = {26},
+  number        = {1},
+  date          = {2014},
+  month         = {2},
+  pages         = {20--26},
+  keywords      = {bretter},
+}
