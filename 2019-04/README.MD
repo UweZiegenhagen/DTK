@@ -1,6 +1,6 @@
     @article {dtk19.4:ziegenhagen:paloalto,
       author        = {Uwe Ziegenhagen},
-      title         = {Making TeX Great Again -- Die Tug-Tagung in Palo Alto},
+      title         = {Making TeX Great Again -- Die TUG-Tagung in Palo Alto},
       journal       = dtk,
       date          = {2019},
       volume        = {31},
