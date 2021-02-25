@@ -18,4 +18,22 @@ If you want to translate and/or reprint an article, please ask for my permission
 
 # Status
 
+* 2007-02:
+* 2008-03:
+* 2009-01: DONE, no sources
+* 2009-02: DONE
+* 2009-04:
+* 2010-03:
+* 2010-04:
+* 2011-04:
+* 2012-03:
 * 2012-04: DONE
+* 2013-01: DONE
+* 2014-01: DONE
+* 2014-02: DONE
+* 2015-01: DONE
+* 2015-02: DONE
+* 2016-02:
+* 2016-03: DONE
+* 2017-01: DONE
+* 2019-04: DONE
