@@ -1,0 +1,26 @@
+\documentclass{article}
+\usepackage[paperwidth=10cm,paperheight=10cm,left=0cm,%
+right=0cm,bottom=0cm,top=0.25cm]{geometry}
+\usepackage{tikz}
+\usepackage{animate}
+
+\begin{document}
+
+\begin{animateinline}{10}
+\multiframe{17}{Ry=0.1+0.05}{
+\begin{tikzpicture}[x=8cm,y=8cm]
+\draw[step=8cm,gray,very thin] (0,0) grid (1,1);
+
+\draw[dotted,line width=.75pt] (0,0) -- (0.25,\Ry) -- (0.8,0.3) -- (1,1);  
+
+\draw[line width=1pt] (0,0) .. controls (0.25,\Ry) and (0.8,0.3) .. (1,1);
+
+\draw [magenta,fill=magenta] (0,0) node[below,black]{$P_0$} 	circle (.5ex); 
+\draw [magenta,fill=magenta] (0.25,\Ry) node[left,black]{$P_1$} circle (.5ex); 
+\draw [magenta,fill=magenta] (0.8,0.3) node[right,black]{$P_2$} circle (.5ex); 
+\draw [magenta,fill=magenta](1.0,1.0) node[above,black]{$P_3$} circle (.5ex); 
+\end{tikzpicture}}
+\end{animateinline}
+
+\end{document}
+
