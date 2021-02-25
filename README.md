@@ -14,3 +14,8 @@ the articles may be outdated, I cannot guarantee that everything still works.
 Use the materials as you like, but mention my name and homepage www.uweziegenhagen.de.
 
 If you want to translate and/or reprint an article, please ask for my permission before.
+
+
+# Status
+
+* 2012-04: DONE
