@@ -1,0 +1,105 @@
+\documentclass[12pt,ngerman]{dtk}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{babel}
+\usepackage{csquotes}
+\usepackage{blindtext}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{paralist} 
+\usepackage{xcolor}
+\usepackage{xspace}
+\usepackage{url}
+\usepackage{siunitx}
+
+\sisetup{
+output-decimal-marker = {,}}
+
+\title{Größere Dokumente mit \LaTeX} 
+\Author{Uwe}{Ziegenhagen}{Köln} 
+\markboth{Größere Dokumente mit \LaTeX}{Größere Dokumente mit \LaTeX}
+
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\LaTeX\ ist bekannt dafür, auch mit größeren Dokumenten jeder Art fertig zu werden, da die zugrundeliegende Architektur überaus stabil ist. Doch wie organisiert man ein Projekt mit hunderten von Seiten? Aus den Erfahrungen eines größeren Dissertationsprojekts möchte ich kurz berichten.
+\end{abstract}
+
+\section{Dissertation \& Werkskatalog}
+
+In den letzten Monaten hatte ich Gelegenheit, bei einer Dissertation in Kunstgeschichte \TeX nische Hilfe zu leisten. Der Umfang der Dissertation sollte sich als beeindruckend erweisen: 350 Seiten reiner Fließtext mit insgesamt 1800 Fußnoten, dazu ein Anhang mit Tabellen und ungefähr 150 Abbildungen, gefolgt von mehr als 50 Seiten Literaturverzeichnis. Das fertige PDF hatte eine Größe von ungefähr 210~MB.
+
+Zusätzlich zur eigentlichen Dissertation war jedoch noch ein Werkskatalog zu erstellen, der fast 800 Abbildungen enthielt und am Ende eine Größe von mehr als einem Gigabyte haben sollte.
+
+\section{Organisation}
+
+Da mehrere hundert Kilometer zwischen Autorin und mir lagen, bot das Internet die einzig sinnvolle Möglichkeit, Dateien und Informationen auszutauschen. Alle Daten -- abgesehen von den Bildern, die per DVD und gelber Post ausgetauscht wurden -- lagen dabei in einem zentralen Subversion-Repository auf einem virtuellen Linux-Server. Neben Subversion gibt es noch eine Reihe anderer Versionsverwaltungssysteme wie Git und Mercurial, die für diesen Zweck sinnvoll sind, aufgrund persönlicher Erfahrungen und sehr guter Desktop-Integration über TortoiseSVN zog ich jedoch Subversion vor. 
+
+Für die Installation und Konfiguration von \TeX\ Live 2014 und passenden Editoren wurde Teamviewer genutzt. Teamviewer ist eine Anwendung, die es ermöglicht, einfach und bei gesicherter Verbindung Maus und Tastatur eines entfernten Rechners zu übernehmen. Teamviewer ist für private Anwender kostenlos und für nahezu alle Betriebssysteme verfügbar; daher eignet es sich sehr gut, um Konfiguration \enquote{vor Ort} vorzunehmen.
+
+Die Verzeichnisstruktur war relativ überschaubar. Es gab einen Unterordner \enquote{Spielplatz}, in dem diejenigen Code-Schnipsel abgelegt wurden, die noch nicht ihren Weg in die Dissertation gefunden hatten. 
+So ließen sich verschiedene Zitierstile, Schriftarten und ähnliches ausprobieren, ohne dass die Integrität der eigentlichen Dateien der Dissertation gefährdet wurde.
+
+Ein weiterer Unterordner \enquote{Dissertation} enthielt dann die Dateien, die für die Übersetzung der eigentlichen Dokumente benötigt wurden. Es gab dort zwar den obligatorischen \enquote{Bilder}-Ordner, ansonsten lagen aber alle TeX-Dateien hier.
+
+\subsection{Aufteilung \& Übersetzung des Dokuments}
+
+Die schiere Größe bedingt, die einzelnen Kapitel in separaten Dateien abzulegen und mittels \verb|\include| einzubinden. Eine Fehlersuche wäre sonst schlichtweg nicht effizient durchführbar gewesen, da ein kompletter Durchlauf von \texttt{pdflatex} selbst auf einem schnellen Desktop-Rechner mit Intel i7-Prozessor, schneller SSD und 32 GB RAM bereits eine gute halbe Minute dauerte.
+
+Da der genutzte \TeX works Editor entsprechende Unterstützung bietet, konnte in den einzelnen Kapitel-Dateien über \verb|% !TeX root| festgelegt werden, welches die zu kompilierende Hauptdatei war, in die dann dieses entsprechende Kapitel inkludiert worden war (siehe Listing \ref{lis:root}).
+
+\begin{lstlisting}[caption={Definition der Hauptdatei in den einzelnen Kapitel-Dateien},label={lis:root}]
+% !TeX root = Dissertation.tex
+...
+\chapter{<Kapitelname>}
+\end{lstlisting}
+
+Für die eigentliche Steuerung des \LaTeX-Laufs wurde \texttt{Arara} genutzt. Dieses Programm, seit 2013 auch Teil von \TeX\ Live, wertet spezielle Kommentare in der \LaTeX-Datei aus. So lässt sich beispielsweise steuern, dass zuerst zwei \texttt{pdflatex}-Läufe stattfinden müssen, bei denen kein PDF geschrieben wird, sondern nur die Hilfsdateien erzeugt werden. Im Anschluss kümmert sich \texttt{biber} um die Bibliografie, bevor zwei weitere \texttt{pdflatex} Läufe das fertige PDF setzen. Listing \ref{lis:arara} zeigt einen entsprechenden Dokumentenkopf.
+
+\begin{lstlisting}[caption={Arara-Kopf für die Steuerung des \LaTeX\ Laufs},label={lis:arara}]
+%!TEX TS-program = Arara
+% arara: pdflatex: { draft : yes }
+% arara: pdflatex: { draft : yes }
+% arara: biber
+% arara: pdflatex
+% arara: pdflatex
+...
+\documentclass[11pt,bibliography=totoc,a4paper]{scrreprt}
+\end{lstlisting}
+
+Als kleiner Nachteil von \texttt{Arara} erwies sich, dass bei Fehlern während der Übersetzung gelegentlich Instanzen von \texttt{pdflatex} im Speicher blieben, die dann manuell per Taskmanager geschlossen werden mussten.
+
+\section{Bibliografie}
+
+Die Bibliografie, mit knapp 800 Einträgen auch ein wenig größer, wurde mit \texttt{JabRef} 2.10 verwaltet. Diese kostenlose Software ist in Java geschrieben und bietet ein gut zugängliches grafisches Benutzerinterface für die manuell nur schwer handhabbaren Bib-Dateien. Zu beachten ist aber, dass JabRef standardmäßig den Bib\TeX\  Modus ist und das ISO~8859 Encoding nutzt. Unter \texttt{Optionen > Einstellungen > Allgemein} lässt sich auf UTF-8 umschalten, unter \texttt{Optionen > Einstellungen > Erweitert} der Bib\LaTeX\ Modus aktivieren. 
+
+
+\section{Bilder}
+
+Da der Werkkatalog fast 800 Bilder enthielt, die jeweils 5--15 Zeilen Bildunterschrift bekommen sollten, wäre eine manuelle Bearbeitung der \verb|\caption{}|-Befehle  sehr mühselig und fehleranfällig gewesen. Daher wurde eine entsprechende Excel-Datei aufgesetzt, in deren fast zwanzig Spalten eine Vielzahl von Informationen, wie z.\,B. Katalognummer, Name der Bilddatei, Signatur, Maße, Provenienz, genutzte Technik und Literaturverweise zum jeweiligen Werk gespeichert wurden. Der eigentliche \verb|\caption| Befehl wurde dann mit den Zeichenketten-Funktionen von Excel zusammengebaut. Das Stichwort ist hier \texttt{Verketten()} bzw. die Abkürzung mittels \texttt{\&}. Zeilenumbrüche im fertigen String können übrigens über \texttt{Zeichen(10)} erzeugt werden. Ein Beispiel für diese Vorgehensweise findet sich in Abbildung \ref{fig:excel}. 
+
+Die fertigen Bildunterschriften konnten dann einfach mittels Kopieren \& Einfügen in das vorbereitete \LaTeX-Dokument übernommen werden.
+
+\begin{figure}
+\fbox{\includegraphics[width=\textwidth]{excel}}
+\caption{Beispiel für durch Excel erzeugten \LaTeX-Code}\label{fig:excel}
+\end{figure}
+
+\section{Querverweise}
+
+Eine weitere Besonderheit bei dieser Arbeit waren die zahlreichen Querverweise. Diese gab es nicht nur innerhalb von Dissertation und Werkskatalog, sondern auch zwischen beiden Dokumenten. Im Werkskatalog sollte nämlich auch aufgelistet werden, wo in der Dissertation dieses Werk erwähnt wird. 
+
+Was für normale Schreibprogramme wie Word oder OpenOffice ein Ding der Unmöglichkeit sein dürfte, war mit \LaTeX\ recht einfach umzusetzen. Die Lösung fand sich in Heiko Oberdieks \texttt{zref-xr} und \texttt{zref-user} Paketen, die das Referenzieren von Labels aus anderen \TeX-Dateien erlauben. Ein vollständiges Beispiel habe ich unter \texttt{http://uweziegenhagen.de/?p=3020} abgelegt.
+
+\section{Erweiterung \& Fazit}
+
+Aus \TeX nischer Sicht war diese Arbeit schon ein \enquote{ordentlicher Brocken}; neben dem Umfang von ingesamt 1300 Seiten waren
+es die vielen kleinen Anforderungen, die die Mitarbeit interessant werden ließen. 
+
+Es hat sich daber aber auch gezeigt, dass man mittels \LaTeX\ auch komplexe Schriftstücke relativ bequem setzen lassen. Mehrere Sprachen wie Sütterlin, Russisch, Griechisch und normalem Deutsch in einem Dokument -- kein Problem! Querverweise zwischen Dokumenten -- kein Problem! Hunderte von Grafiken teilautomatisiert setzen -- kein Problem!
+
+Für mich hat \LaTeX\ mal wieder bewiesen, dass es noch längst nicht zum alten Eisen gehört. In diesem Sinne: Happy \TeX ing!
+
+\end{document} 
