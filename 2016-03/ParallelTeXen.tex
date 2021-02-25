@@ -1,0 +1,136 @@
+\documentclass{dtk}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{booktabs}
+\usepackage{babel}
+\usepackage{graphicx}
+\usepackage{csquotes}
+\usepackage{paralist}
+\usepackage{xcolor}
+\usepackage{microtype}
+
+%\usepackage{mdframed} % Boxen
+%\newmdenv [linecolor=black,backgroundcolor=gray!15, frametitle={Punktverteilung},leftmargin=1cm,rightmargin=1cm]{infobox}
+
+\title{Parallel \TeX en mit Python}
+\Author{Uwe}{Ziegenhagen}{Köln}
+
+\definecolor{hellgelb}{rgb}{1,1,0.8}
+\definecolor{lightgelb}{rgb}{1,1,0.8}
+\definecolor{colKeys}{rgb}{0,0,1}
+\definecolor{colIdentifier}{rgb}{0,0,0}
+\definecolor{colComments}{rgb}{1,0,0}
+\definecolor{colString}{rgb}{0,0.5,0}
+
+\lstset{%
+    float=hbp,%
+    basicstyle=\ttfamily\footnotesize, %
+    identifierstyle=\color{colIdentifier}, %
+    keywordstyle=\color{colKeys}, %
+    stringstyle=\color{colString}, %
+    commentstyle=\color{colComments}, %
+	language= Python,%
+    columns=flexible, %
+    tabsize=2, %
+    morekeywords={fillwithlines, fillwithdottedlines,makeemptybox,part, fillwithgrid,answerline,gradetable,newmdenv,punkte,pointpoints},%
+    morekeywords={bonuspointpoints,solutiontitle,chqword,chpgword,chpword,chbpword,chsword,chtword},%
+    morekeywords={question,runningheadrule,firstpageheader,runningheader,dozent,fach,firstpagefooter,runningfooter,numpages},%
+    morekeywords={choice,CorrectChoice,hpword,hsword,hqword,htword,firstpageheadrule},
+    frame=single, %
+    extendedchars=true, %
+    showspaces=false, %
+    showstringspaces=false, %
+    numbers=left, %
+    numberstyle=\tiny, %
+    breaklines=true, %
+    backgroundcolor=\color{yellow!15}, %
+    breakautoindent=true, %
+    captionpos=b%
+}
+
+
+\lstset{literate=%
+    {Ö}{{\"O}}1
+    {Ä}{{\"A}}1
+    {Ü}{{\"U}}1
+    {ß}{{\ss}}1
+    {ü}{{\"u}}1
+    {ä}{{\"a}}1
+    {ö}{{\"o}}1
+    {~}{{\textasciitilde}}1
+}
+
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+In diesem Artikel möchte ich kurz vorstellen, wie mit Unterstützung durch ein Python-Skript die in vielen Rechnern mehrfachen vorhandenen CPU-Kerne dazu benutzt werden können, \LaTeX-Läufe zu parallelisieren, um so Zeit bei der Übersetzung zu sparen.
+\end{abstract}
+
+\section{Einführung}
+
+Der durchschnittliche Computer-Nutzer hat heutzutage auf dem Schreibtisch weit mehr Rechenleistung, als der NASA für den Flug zum Mond bereitstand\footnote{\url{http://www.computerweekly.com/feature/Apollo-11-The-computers-that-put-man-on-the-moon}}. Mehrere CPU-Kerne oder sogar mehrere CPUs sowie eine vor 20 Jahren unvorstellbar große Menge RAM langweilen sich die meiste Zeit, weil in vielen Fällen der Mensch vor dem Rechner der limitierende Faktor ist. So schnell, wie ein moderner Rechner rechnen kann, kann in den meisten Fällen der Mensch nicht die Aufgaben heranschaffen, die es zu bearbeiten gilt.
+
+Beim Verarbeiten von umfangreichen \TeX-Dokumenten ist es jedoch auch heute noch so, dass auch moderne Rechner einige Minuten brauchen, um beispielsweise die hunderten Seiten einer Dissertation mehrfach zu übersetzen.
+
+Ausgangspunkt dieses Artikels war die Frage, ob nicht durch \textit{parallele} \LaTeX-Läufe ein Geschwindigkeitszuwachs erzielt werden kann. Außerdem -- nur unter uns -- dient dieser Anwendungsfall als Rechtfertigung vor meiner Frau, einen lauten und großen Rechner anschaffen zu \textit{müssen}. 
+
+Als technische Plattform wird Python~3 genutzt, andere Programmiersprachen und selbst \texttt{make}\footnote{\url{www.gnu.org/software/make/manual/html_node/Parallel.html}} halten jedoch ähnliche Funktionalitäten bereit.
+
+\section{Python-Code}
+
+In diesem Abschnitt möchte ich kurz auf den Beispiel-Code in Listing \ref{lis:min} eingehen, den ich basierend auf einem stackoverflow-Beispiel\footnote{\url{http://stackoverflow.com/questions/16181121/python-very-simple-multithreading-parallel-url-fetching-without-queue}} für \LaTeX\ angepasst habe. Es werden drei Python-Bibliotheken geladen: \texttt{multiprocessing}, \texttt{time} und \texttt{os}. \texttt{multiprocessing} kümmert sich um die Parallisierung der Aufgaben, \texttt{time} stellt eine Stoppuhr bereit, um den Leistungszuwachs messen zu können und \texttt{os} setzt die Betriebssystembefehle zum Aufruf von \texttt{pdflatex} ab.
+
+Die Variable \texttt{files} bekommt eine Liste von zehn identischen \TeX-Dateien übergeben, die dann parallelisiert übersetzt werden sollen. Die einzelnen Dateien enthalten nur einige übliche Pakete sowie einige Blindtext-Paragraphen, auf eine Darstellung kann daher hier verzichtet werden.  \texttt{compileFile()} ist die Funktion, die den \texttt{pdflatex}-Aufruf für ein übergebenes Dokument (in der Variable \texttt{cfile} gespeichert) steuert. Die Funktion versucht, die übergebene Datei im Batch-Mode (also mit möglichst wenig Ausgabe) zu übersetzen, bei auftretenden Fehlern wird eine Exception ausgelöst und der Exception-Text zurückgegeben. 
+
+\texttt{start = timer()} startet die Stoppuhr, auf die dann bei den einzelnen Läufen referenziert wird. Die folgende Zeile sorgt dafür, dass der \texttt{ThreadPool} erstellt wird, dem dann die Aufgabe sowie die Liste der zu übersetzenden Dateien übergeben wird. Einen \texttt{ThreadPool} muss man sich als Sammlung von Arbeitsbienen vorstellen, in diesem Fall acht Stück,was der der Zahl der CPU-Kerne in meinem Rechner und damit der Zahl der maximal \textit{gleichzeitig} parallelisierbaren Aufgaben entspricht.
+
+Der Rest des Codes sorgt nur dafür, dass die gesetzte Zeit -- beziehungsweise im Fehlerfall die Fehlermeldung -- ausgegeben wird.
+
+\begin{lstlisting}[caption={Quellcode für den ersten Test},label={lis:min}]
+from multiprocessing.pool import ThreadPool
+from time import time as timer
+import os
+ 
+files = ['test-01.tex', 'test-02.tex', 'test-03.tex', 'test-04.tex',
+'test-05.tex', 'test-06.tex', 'test-07.tex', 'test-08.tex', 
+'test-09.tex', 'test-10.tex']
+ 
+def compileFile(cfile):
+	try:
+		result = os.system('pdflatex -interaction=batchmode ' + cfile)
+		return cfile, None
+	except Exception as e:
+		return cfile, e	
+ 
+start = timer()
+results = ThreadPool(8).imap_unordered(compileFile, files)
+for cfile, error in results:
+	if error is None:
+		print("%r compiled in %ss" % (cfile, timer() - start))
+	else:
+		print("Error compiling %r: %s" % (cfile, error))
+		print("Elapsed Time: %s" % (timer() - start,))
+
+print('Gesamtzeit',timer() - start)
+\end{lstlisting}
+
+\section{Parallele Spendenbescheinigungen}
+
+Während die Unterschiede im oben erwähnten Beispiel zwischen rein sequentieller und paralleler Bearbeitung nur bei wenigen Sekunden (7,9 Sekunden versus 3,6 Sekunden) liegen, bringt das nächste Beispiel deutlichere Unterschiede. In DTK 2/2014 hatte ich gezeigt, wie man mit Hilfe von \LaTeX, MySQL und Python Spendenbescheinigungen setzen kann, der Prozess generiert dabei für jede Spendenbescheinigung eine eigene \TeX-Datei.
+
+Für das Jahr 2015 hatte ich in meiner Funktion als Schatzmeister des Kölner Dingfabrik~e.\,V. 88 einzelne Dokumente, also eine gute Basis für einen Test. Als Rechner stand ein Dual-Xeon mit insgesamt acht Kernen, 48 GB RAM und installiertem \TeX~Live 2016 zur Verfügung, alle \TeX-Dateien befanden sich in einer RAM-Disk. Sequentiell dauerte die Übersetzung knapp 60 Sekunden, parallisiert weniger als 8 Sekunden. Ein weiterer Test mit diesen Dateien auf einem i7 unter Windows 8 -- mit den Dateien auf einer SSD -- ergab rund 74 Sekunden für die sequentielle Übersetzung und ungefähr 24 Sekunden für die parallelisierte Übersetzung.
+
+\section{Fazit}
+
+Im alltäglichen Gebrauch ist es vermutlich nicht wirklich notwendig, \TeX-Dateien parallelisiert zu übersetzen, in den meisten Fällen ist die sequentielle Verarbeitung sogar notwendig, um die Abhängigkeiten zu \texttt{makeindex} und \texttt{biblatex}/\texttt{biber} aufzulösen.
+
+Bei einer Vielzahl ähnlicher Dokumente, die es zu übersetzen gilt, zeigen sich aber signifikante Geschwindigkeitszuwächse. Darüber hinaus macht es natürlich Spaß, die vorhandene Hardware richtig ausnutzen zu können\ldots
+
+Wie immer freue ich mich über Anregungen und Ideen, gern per E-Mail an ziegenhagen@gmail.com.
+
+\end{document}
