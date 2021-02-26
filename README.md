@@ -18,22 +18,22 @@ If you want to translate and/or reprint an article, please ask for my permission
 
 # Status
 
-* 2007-02:
-* 2008-03:
-* 2009-01: DONE, no sources
-* 2009-02: DONE
-* 2009-04:
-* 2010-03:
-* 2010-04:
-* 2011-04:
-* 2012-03:
-* 2012-04: DONE
-* 2013-01: DONE
-* 2014-01: DONE
-* 2014-02: DONE
-* 2015-01: DONE
-* 2015-02: DONE
-* 2016-02:
-* 2016-03: DONE
-* 2017-01: DONE
-* 2019-04: DONE
+* 2007-02: PDF
+* 2008-03: PDF
+* 2009-01: PDF
+* 2009-02: PDF und Quellen
+* 2009-04: PDF und Quellen
+* 2010-03: PDF, PDF
+* 2010-04: PDF
+* 2011-04: PDF
+* 2012-03: PDF mit Quellen (Europass), PDF (Umschläge)
+* 2012-04: PDF und Quellen
+* 2013-01: PDF und Quellen
+* 2014-01: PDF und Quellen
+* 2014-02: PDF und Quellen
+* 2015-01: PDF und Quellen
+* 2015-02: PDF und Quellen
+* 2016-02: PDF
+* 2016-03: PDF und Quellen
+* 2017-01: PDF und Quellen
+* 2019-04: PDF und Quellen
