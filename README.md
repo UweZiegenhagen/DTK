@@ -18,7 +18,7 @@ If you want to translate and/or reprint an article, please ask for my permission
 
 # Status
 
-* 2007-02: "Tagungsbericht Frühjahrstagung in Münster", PDF
+* 2007-02: ["Tagungsbericht Frühjahrstagung in Münster"](./2007-02/), PDF
 * 2008-03: "Dokumentenmanagement mit LaTeX und Subversion", PDF
 * 2009-01: "Konferenzmanagement mit LaTeX", PDF
 * 2009-02: "Wörter zählen in LaTeX-Dokumenten", PDF und Quellen
