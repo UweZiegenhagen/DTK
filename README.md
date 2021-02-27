@@ -1,8 +1,8 @@
 # Meine DTK Artikel
 
 Meine Artikel für "Die TeXnische Komödie". Einige der Artikel sind vermutlich veraltet, 
-ich kann nicht garantieren, dass alles noch genau so funktioniert wie es beschrieben
-wurde.
+ich kann nicht garantieren, dass alles noch genau so funktioniert, wie es im Artikel
+beschrieben wurde.
 
 # English Summary
 
