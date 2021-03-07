@@ -1,0 +1,33 @@
+\documentclass[landscape]{scrartcl}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage[sfdefault]{plex-sans}
+
+\begin{filecontents}[overwrite]{Ordner.tdf}
+\unitlength=1mm
+\hoffset=10mm
+\voffset=-15mm
+\ticketNumbers{1}{3}
+\ticketSize{190}{58} % Breite und Hoehe der Labels in mm
+\ticketDistance{0}{0} % Abstand der Labels
+\end{filecontents}
+
+\usepackage[Ordner]{ticket}
+ 
+\renewcommand{\ticketdefault}{}%
+\makeatletter
+\@boxedtrue % Rahmen um Ticket
+\@emptycrossmarkfalse % Falzmarken
+\@cutmarktrue % Schnittmarken
+\makeatother
+ 
+\newcommand{\myticket}[2]{
+\ticket{%
+\put(15,15){\scalebox{#1}{\bfseries #2}}
+}}
+ 
+\begin{document}
+\myticket{7}{Ausbildung}
+\myticket{7}{Steuern}
+\myticket{12}{ADAC}
+\end{document}
