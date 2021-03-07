@@ -1,0 +1,105 @@
+\documentclass[12pt,ngerman]{dtk}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{booktabs}
+\usepackage{babel}
+\usepackage{graphicx}
+\usepackage{csquotes}
+\usepackage{xcolor}
+\usepackage{pgfornament,eso-pic,calc}
+\usepackage{listings}
+
+\title{Ornamente in \LaTeX-Dokumenten mit pgfornament}
+\Author{Uwe}{Ziegenhagen}{Köln}
+
+\AddToShipoutPicture*{%
+    \setlength{\dimen0}{12mm} % Breite der Ornamente
+    \setlength{\dimen1}{5mm}% globaler Abstand zum Rand
+    \setlength{\dimen2}{\paperwidth-\dimen1-\dimen0} % rechter horizontaler Abstand
+    \setlength{\dimen3}{\paperheight-\dimen1} % rechter vertikaler Abstand
+    \put(\LenToUnit{\dimen1},\LenToUnit{\dimen3}){\pgfornament[color=gray,anchor=north west,width=\LenToUnit{\dimen0}]{61}} 
+    \put(\LenToUnit{\dimen1},\LenToUnit{\dimen1}){\pgfornament[color=gray,anchor=south west,width=\LenToUnit{\dimen0},symmetry=h]{61}}
+    \put(\LenToUnit{\dimen2},\LenToUnit{\dimen3}){\pgfornament[color=gray,anchor=north east,width=\LenToUnit{\dimen0},symmetry=v]{61}}    
+    \put(\LenToUnit{\dimen2},\LenToUnit{\dimen1}){\pgfornament[color=gray,anchor=south east,width=\LenToUnit{\dimen0},symmetry=c]{61}} 
+} 
+
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Für einen von mir gehaltenen \LaTeX-Kurs wollte ich gern Teilnahmebescheinigungen an die Teilnehmerinnen und Teilnehmer ausgeben, die in den Ecken Verzierungen -- Ornamente -- aufweisen. CTAN hat dazu mit \texttt{pgfornament} ein interessantes Paket, das ich in diesem Artikel mit einem praktischen Beispiel kurz vorstellen möchte.
+\end{abstract}
+
+
+\section{Das \texttt{pgfornament} Paket}
+
+Das \texttt{pgfornament} Paket wurde von Alain Matthes entwickelt und ist aktuell in Version 1.2 (Stand Mai 2020) auf CTAN und in TeX Live enthalten. Es stellt mehr als 250 verschiedene Ornamente bereit, darunter auch knapp 80 traditionell chinesische Motive, die über den \texttt{\textbackslash pgfornament\{Symbol\}}-Befehl gesetzt werden können, siehe das folgende Listing für ein minimales Beispiel. Die einzelnen Ornamente werden dabei in \texttt{tikzpicture} Umgebungen gesetzt, sind damit also auch über pgf und TikZ adressier- und editierbar. 
+
+
+\begin{lstlisting}[language={[LaTeX]TeX}]
+\documentclass{minimal}
+\usepackage{pgfornament}
+\begin{document}
+\pgfornament{78}
+\end{document}
+\end{lstlisting}
+
+\begin{center}
+\pgfornament{78}
+\end{center}
+
+\section{Erstellung des Zertifikats}
+
+Das folgende Beispiel wurde der Paket-Dokumentation entlehnt, die noch eine Reihe weiterer Beispiele enthält. 
+
+Um die Punkte zu berechnen, an denen wir die Ornamente platzieren, können einige der \TeX-internen Längenregister nutzen. Von diesen gibt es insgesamt 256 Stück, die Register 0 bis 9  gelten dabei als \enquote{frei für eine lokale Nutzung als Hilfsregister} (siehe N.\,Schwarz, Einführung in \TeX, S. 147). Wir laden auch noch das \texttt{calc} Paket, um mit den Längen rechnen zu können.
+
+\begin{description}
+\item[\texttt{\textbackslash dimen0}] wird hier auf 12 Millimeter gesetzt, die Größe der einzelnen Ornamente
+\item[\texttt{\textbackslash dimen1}] wird auf 5 Millimeter gesetzt, der Abstand zu den Seitenrändern
+\item[\texttt{\textbackslash dimen2}] erhält den Wert Papierbreite minus globalem Rand minus Breite der Ornamente, dieser Wert ist die horizontale Länge für den rechten Rand.
+\item[\texttt{\textbackslash dimen3}] erhält den Wert Papierhöhe minus globalem Abstand. Dies wird die vertikale Höhe unserer Ornamente am oberen Rand. 
+\end{description}
+
+Die gesetzten Längen wandeln wir dann mittels \verb|\LenToUnit| in die XY-Koordinaten der vier Punkte um, an die dann mit dem \texttt{\textbackslash put} Befehl von \texttt{eso-pic}  das jeweilige Ornament gesetzt wird.
+
+\begin{center}
+\begin{tabular}{lcc} \toprule
+& X & Y \\ \midrule
+links unten & \texttt{\textbackslash dimen1} & \texttt{\textbackslash dimen1} \\
+links oben & \texttt{\textbackslash dimen1} & \texttt{\textbackslash dimen3} \\ 
+rechts unten & \texttt{\textbackslash dimen2} & \texttt{\textbackslash dimen1} \\
+rechts oben & \texttt{\textbackslash dimen2} & \texttt{\textbackslash dimen3} \\ \bottomrule
+\end{tabular}
+\end{center}
+
+Dem \texttt{\textbackslash pgfornament} Aufruf müssen aber noch zwei weitere Informationen übergeben werden: 1) wo sich der TikZ-Ankerpunkt befindet und 2) ob das Symbol selbst gespiegelt werden muss. Für erstes gilt die TikZ Notation (\enquote{north east}, \enquote{south west}), für letzteres kennt \texttt{pgfornament} die \enquote{symmetry} Option. 
+
+Das Symbol links unten wird entlang der Horizontalen gekippt (Wert \enquote{h}), das Symbol rechts oben entlang der vertikalen Achse (Wert \enquote{v})und das Symbol rechts unten entlang der 45-Grad-Linie (Wert \enquote{c}).
+
+Das fertige Ergebnis sieht man in den Ecken dieses Artikels, auf der folgenden Seite ist der Quellcode dazu abgedruckt. \clearpage
+
+\begin{lstlisting}[language={[LaTeX]TeX}]
+\AddToShipoutPicture{%
+ \setlength{\dimen0}{12mm} % Breite der Ornamente
+ \setlength{\dimen1}{5mm}% globaler Abstand zum Rand
+ \setlength{\dimen2}{\paperwidth-\dimen1-\dimen0} % rechter horiz. Abstand
+ \setlength{\dimen3}{\paperheight-\dimen1} % rechter vert. Abstand
+  \put(\LenToUnit{\dimen1},\LenToUnit{\dimen3}){\pgfornament[color=gray,
+   anchor=north west,width=\LenToUnit{\dimen0}]{61}} 
+  \put(\LenToUnit{\dimen1},\LenToUnit{\dimen1}){\pgfornament[color=gray,
+   anchor=south west,width=\LenToUnit{\dimen0},symmetry=h]{61}}
+  \put(\LenToUnit{\dimen2},\LenToUnit{\dimen3}){\pgfornament[color=gray,
+   anchor=north east,width=\LenToUnit{\dimen0},symmetry=v]{61}}    
+  \put(\LenToUnit{\dimen2},\LenToUnit{\dimen1}){\pgfornament[color=gray,
+   anchor=south east,width=\LenToUnit{\dimen0},symmetry=c]{61}} 
+} 
+\end{lstlisting}
+
+Ein Beispiel für eine komplette Teilnahmebestätigung findet sich in meinem Blog unter \url{https://www.uweziegenhagen.de/?p=4461}. 
+
+Die sehr schön gesetzte Paketdokumentation sei dem interessierten Leser ans Herz gelegt, sie zeigt noch viele schöne Möglichkeiten, mit Ornamenten Dokumente aufzuhübschen.
+
+\end{document}
