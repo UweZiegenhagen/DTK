@@ -37,3 +37,4 @@ If you want to translate and/or reprint an article, please ask for my permission
 * 2016-03: ["Parallel TeXen mit Python"](./2016-03/), PDF und Quellen
 * 2017-01: ["Wie man einen eigenen TeX Live Mirror aufsetzt"](./2017-01/), PDF und Quellen
 * 2019-04: ["Making TeX Great Again -- Die TUG-Tagung in Palo Alto"](./2019-04/), PDF und Quellen
+* 2021-01: ["Ordnerrücken gestalten mit ticket.sty"](./2021-01/) und ["Ornamente in LaTeX-Dokumenten mit pgfornament"](./2021-01/), jeweils PDF und Quellen 
